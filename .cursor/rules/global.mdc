@@ -1,0 +1,67 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 開発ルール
+
+## TypeScript
+- `any`使用禁止 - 明確な型定義必須
+- 型安全性を最優先とする
+
+## アーキテクチャ
+
+### ページ作成
+1. `src/features/[機能名]/`でディレクトリ作成
+2. サブディレクトリ：`components/`, `hooks/`, `types/`, `services/`
+3. `src/config/routes.ts`にルート追加
+
+### コンポーネント
+- 関数コンポーネント使用
+- `React.FC`禁止 - props直接型注釈
+- JSXのみの場合Reactインポート不要
+- Server/Client Component区別明確化
+- Suspense活用
+
+### Shared モジュール
+- `src/shared/[機能名]/`配置
+- 必須：`index.ts`（エクスポート）, `README.md`（仕様）
+- Context使用時：`types.ts`で型定義、カスタムフックでアクセス
+- 命名：PascalCase（コンポーネント）、camelCase（フック）
+- 型名：PascalCase + `Type`/`Interface`サフィックス
+
+## UI Framework
+
+### MUI Grid V7
+```tsx
+// 基本
+<Grid size={12}></Grid>
+// レスポンシブ
+<Grid size={{ xs: 12, md: 6 }}></Grid>
+// スタイリング
+<Grid size={12} sx={{ padding: 2, backgroundColor: 'grey.100' }}>
+```
+
+## Amplify Data Client
+
+### 禁止事項
+- `client.models.[Model].list()`（フルスキャン回避）
+
+### 推奨パターン
+```tsx
+// 特定取得
+const { data } = await client.models.Todo.get({ id });
+// フィルタ付きクエリ
+const { data } = await client.models.Todo.list({
+  filter: { userId: { eq: currentUserId } }
+});
+```
+
+### 許可条件
+- マスタデータ全件取得
+- 管理画面一覧（件数限定）
+- 明示的な全件取得必要性確認済み
+
+
+
+
